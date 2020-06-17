@@ -66,7 +66,7 @@ async function run(): Promise<void> {
         utils.logInfo(`Retrieved ${issueComments.length} issue comments.`);
 
         for (const comment of issueComments) {
-            utils.logInfo(`@${comment.user} said "${comment.text}"`);
+            console.log(`@${comment.user} said "${comment.text}"`);
         }
 
         utils.logInfo("🎉🎈🎊 Action complete 🎉🎈🎊");

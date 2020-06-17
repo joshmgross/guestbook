@@ -20,18 +20,7 @@ enum ForegroundColor {
     White = "\x1b[37m"
 }
 
-enum BackgroundColor {
-    Black = "\x1b[40m",
-    Red = "\x1b[41m",
-    Green = "\x1b[42m",
-    Yellow = "\x1b[43m",
-    Blue = "\x1b[44m",
-    Magenta = "\x1b[45m",
-    Cyan = "\x1b[46m",
-    White = "\x1b[47m"
-}
-
 export function logInfo(message: string): void {
-    const textFormat = `${TextEffect.Underscore}${ForegroundColor.Cyan}${BackgroundColor.Black}`;
+    const textFormat = `${TextEffect.Underscore}${ForegroundColor.Cyan}`;
     console.log(`${textFormat}${message}${ColorReset}`);
 }

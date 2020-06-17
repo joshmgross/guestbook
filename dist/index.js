@@ -40,7 +40,7 @@ module.exports =
 /******/ 	// the startup function
 /******/ 	function startup() {
 /******/ 		// Load entry module and return exports
-/******/ 		return __webpack_require__(429);
+/******/ 		return __webpack_require__(325);
 /******/ 	};
 /******/
 /******/ 	// run startup
@@ -2311,6 +2311,43 @@ module.exports.MaxBufferError = MaxBufferError;
 
 /***/ }),
 
+/***/ 163:
+/***/ (function(__unusedmodule, exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.logInfo = void 0;
+const ColorReset = "\x1b[0m";
+var TextEffect;
+(function (TextEffect) {
+    TextEffect["Bright"] = "\u001B[1m";
+    TextEffect["Dim"] = "\u001B[2m";
+    TextEffect["Underscore"] = "\u001B[4m";
+    TextEffect["Blink"] = "\u001B[5m";
+    TextEffect["Reverse"] = "\u001B[7m";
+    TextEffect["Hidden"] = "\u001B[8m";
+})(TextEffect || (TextEffect = {}));
+var ForegroundColor;
+(function (ForegroundColor) {
+    ForegroundColor["Black"] = "\u001B[30m";
+    ForegroundColor["Red"] = "\u001B[31m";
+    ForegroundColor["Green"] = "\u001B[32m";
+    ForegroundColor["Yellow"] = "\u001B[33m";
+    ForegroundColor["Blue"] = "\u001B[34m";
+    ForegroundColor["Magenta"] = "\u001B[35m";
+    ForegroundColor["Cyan"] = "\u001B[36m";
+    ForegroundColor["White"] = "\u001B[37m";
+})(ForegroundColor || (ForegroundColor = {}));
+function logInfo(message) {
+    const textFormat = `${TextEffect.Underscore}${ForegroundColor.Cyan}`;
+    console.log(`${textFormat}${message}${ColorReset}`);
+}
+exports.logInfo = logInfo;
+
+
+/***/ }),
+
 /***/ 168:
 /***/ (function(module) {
 
@@ -2841,58 +2878,90 @@ isStream.transform = function (stream) {
 
 /***/ }),
 
+/***/ 325:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const core = __importStar(__webpack_require__(470));
+const github_1 = __webpack_require__(469);
+const utils = __importStar(__webpack_require__(163));
+async function run() {
+    try {
+        // Inputs and validation
+        const token = core.getInput("token", { required: true });
+        const octokit = github_1.getOctokit(token);
+        const issue = Number(core.getInput("issue", { required: true }));
+        if (isNaN(issue) || issue <= 0) {
+            core.setFailed("❌ Invalid input: issue must be a valid number.");
+            return;
+        }
+        utils.logInfo(`Retrieving issue commments from Issue #${issue}`);
+        const issueRequestData = {
+            // 🐫
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            issue_number: issue,
+            owner: github_1.context.repo.owner,
+            repo: github_1.context.repo.repo
+        };
+        const issueComments = [];
+        for await (const issueCommentResponse of octokit.paginate.iterator(octokit.issues.listComments, issueRequestData)) {
+            if (issueCommentResponse.status < 200 || issueCommentResponse.status > 299) {
+                core.error(`❌ Received error response when retrieving guestbook issue: ${issueCommentResponse.status} - ${JSON.stringify(issueCommentResponse.data)}.`);
+                break;
+            }
+            issueComments.push(...issueCommentResponse.data.map(comment => {
+                return {
+                    id: comment.id,
+                    text: comment.body,
+                    user: comment.user.login,
+                    url: comment.html_url
+                };
+            }));
+        }
+        if (issueComments.length == 0) {
+            core.error("❌ No issues retrieved.");
+            return;
+        }
+        utils.logInfo(`Retrieved ${issueComments.length} issue comments.`);
+        for (const comment of issueComments) {
+            console.log(`@${comment.user} said "${comment.text}"`);
+        }
+        utils.logInfo("🎉🎈🎊 Action complete 🎉🎈🎊");
+    }
+    catch (error) {
+        core.setFailed(`❌ Action failed with error: ${error}`);
+    }
+}
+run();
+
+
+/***/ }),
+
 /***/ 357:
 /***/ (function(module) {
 
 module.exports = require("assert");
-
-/***/ }),
-
-/***/ 378:
-/***/ (function(__unusedmodule, exports) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.logInfo = void 0;
-const ColorReset = "\x1b[0m";
-var TextEffect;
-(function (TextEffect) {
-    TextEffect["Bright"] = "\u001B[1m";
-    TextEffect["Dim"] = "\u001B[2m";
-    TextEffect["Underscore"] = "\u001B[4m";
-    TextEffect["Blink"] = "\u001B[5m";
-    TextEffect["Reverse"] = "\u001B[7m";
-    TextEffect["Hidden"] = "\u001B[8m";
-})(TextEffect || (TextEffect = {}));
-var ForegroundColor;
-(function (ForegroundColor) {
-    ForegroundColor["Black"] = "\u001B[30m";
-    ForegroundColor["Red"] = "\u001B[31m";
-    ForegroundColor["Green"] = "\u001B[32m";
-    ForegroundColor["Yellow"] = "\u001B[33m";
-    ForegroundColor["Blue"] = "\u001B[34m";
-    ForegroundColor["Magenta"] = "\u001B[35m";
-    ForegroundColor["Cyan"] = "\u001B[36m";
-    ForegroundColor["White"] = "\u001B[37m";
-})(ForegroundColor || (ForegroundColor = {}));
-var BackgroundColor;
-(function (BackgroundColor) {
-    BackgroundColor["Black"] = "\u001B[40m";
-    BackgroundColor["Red"] = "\u001B[41m";
-    BackgroundColor["Green"] = "\u001B[42m";
-    BackgroundColor["Yellow"] = "\u001B[43m";
-    BackgroundColor["Blue"] = "\u001B[44m";
-    BackgroundColor["Magenta"] = "\u001B[45m";
-    BackgroundColor["Cyan"] = "\u001B[46m";
-    BackgroundColor["White"] = "\u001B[47m";
-})(BackgroundColor || (BackgroundColor = {}));
-function logInfo(message) {
-    const textFormat = `${TextEffect.Underscore}${ForegroundColor.Cyan}${BackgroundColor.Black}`;
-    console.log(`${textFormat}${message}${ColorReset}`);
-}
-exports.logInfo = logInfo;
-
 
 /***/ }),
 
@@ -3374,86 +3443,6 @@ function errname(uv, code) {
 	return `Unknown system error ${code}`;
 }
 
-
-
-/***/ }),
-
-/***/ 429:
-/***/ (function(__unusedmodule, exports, __webpack_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const core = __importStar(__webpack_require__(470));
-const github_1 = __webpack_require__(469);
-const utils = __importStar(__webpack_require__(378));
-async function run() {
-    try {
-        // Inputs and validation
-        const token = core.getInput("token", { required: true });
-        const octokit = github_1.getOctokit(token);
-        const issue = Number(core.getInput("issue", { required: true }));
-        if (isNaN(issue) || issue <= 0) {
-            core.setFailed("❌ Invalid input: issue must be a valid number.");
-            return;
-        }
-        utils.logInfo(`Retrieving issue commments from Issue #${issue}`);
-        const issueRequestData = {
-            // 🐫
-            // eslint-disable-next-line @typescript-eslint/camelcase
-            issue_number: issue,
-            owner: github_1.context.repo.owner,
-            repo: github_1.context.repo.repo
-        };
-        const issueComments = [];
-        for await (const issueCommentResponse of octokit.paginate.iterator(octokit.issues.listComments, issueRequestData)) {
-            if (issueCommentResponse.status < 200 || issueCommentResponse.status > 299) {
-                core.error(`❌ Received error response when retrieving guestbook issue: ${issueCommentResponse.status} - ${JSON.stringify(issueCommentResponse.data)}.`);
-                break;
-            }
-            issueComments.push(...issueCommentResponse.data.map(comment => {
-                return {
-                    id: comment.id,
-                    text: comment.body,
-                    user: comment.user.login,
-                    url: comment.html_url
-                };
-            }));
-        }
-        if (issueComments.length == 0) {
-            core.error("❌ No issues retrieved.");
-            return;
-        }
-        utils.logInfo(`Retrieved ${issueComments.length} issue comments.`);
-        for (const comment of issueComments) {
-            utils.logInfo(`@${comment.user} said "${comment.text}"`);
-        }
-        utils.logInfo("🎉🎈🎊 Action complete 🎉🎈🎊");
-    }
-    catch (error) {
-        core.setFailed(`❌ Action failed with error: ${error}`);
-    }
-}
-run();
 
 
 /***/ }),
