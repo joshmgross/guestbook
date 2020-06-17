@@ -1,0 +1,18 @@
+name: 🧪
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run Action
+      uses: ./
+      with:
+        my-input: 'hello world'
