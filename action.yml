@@ -2,10 +2,14 @@ name: 'Your name here'
 description: 'Provide a description here'
 author: 'Your name or organization here'
 inputs:
-  my-input:
-    required: false
-    description: 'a great description of your input'
-    default: 'a suitable default value'
+  issue:
+    required: true
+    description: 'The issue number to retrieve guestbook entries'
+    default: 1
+  token:
+    description: >
+      Authorization token used to interact with the repository and update the Guestbook.
+    default: ${{ github.token }}
 runs:
   using: 'node12'
   main: 'dist/index.js'

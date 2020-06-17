@@ -1,7 +1,7 @@
 {
-  "name": "action-template",
-  "version": "1.0.0",
-  "description": "A GitHub Action",
+  "name": "guestbook",
+  "version": "0.0.1",
+  "description": "An Action 🎬 to create a Guestbook 📖✒ in your Repository 📚",
   "main": "dist/index.js",
   "private": true,
   "scripts": {
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/joshmgross/action-template.git"
+    "url": "git+https://github.com/joshmgross/guestbook.git"
   },
   "keywords": [
     "Actions",
@@ -24,11 +24,12 @@
   "author": "joshmgross",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/joshmgross/action-template/issues"
+    "url": "https://github.com/joshmgross/guestbook/issues"
   },
-  "homepage": "https://github.com/joshmgross/action-template#readme",
+  "homepage": "https://github.com/joshmgross/guestbook#readme",
   "dependencies": {
-    "@actions/core": "^1.2.3"
+    "@actions/core": "^1.2.3",
+    "@actions/github": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^12.0.4",
