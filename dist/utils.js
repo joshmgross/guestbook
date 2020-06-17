@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.logInfo = void 0;
 const ColorReset = "\x1b[0m";
 var TextEffect;
 (function (TextEffect) {
