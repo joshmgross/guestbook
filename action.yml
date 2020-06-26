@@ -8,14 +8,15 @@ inputs:
       The issue number to retrieve guestbook entries
   token:
     description: >
-      Authorization token used to interact with the repository and update the guestbook.
+      Authorization token used to interact with the repository and update the guestbook
     default: ${{ github.token }}
   approvers:
+    required: true
     description: >
-      List of users allowed to approve comments for the guestbook.
+      List of users allowed to approve comments for the guestbook
   guestbook-path:
     description: >
-      File path of the guestbook.
+      File path of the guestbook
 
 runs:
   using: 'node12'
