@@ -41,7 +41,8 @@ function createGuestbookList(comments) {
 function generateGuestbook(path, comments) {
     const guestbook = getReadme(path);
     const guestbookList = createGuestbookList(comments);
-    const updatedGuestbook = guestbook.replace(commentSectionRegex, guestbookList);
+    const guestbookContent = `${startComment}\n${guestbookList}\n${endComment}`;
+    const updatedGuestbook = guestbook.replace(commentSectionRegex, guestbookContent);
     writeReadme(path, updatedGuestbook);
 }
 exports.generateGuestbook = generateGuestbook;
