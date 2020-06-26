@@ -44,7 +44,7 @@ In your guestbook markdown file, add comments to denote the start and end of the
 <!--END:guestbook-->
 ```
 
-# Example Guestbook
+## Example Guestbook
 
 See [guestbook.md](./guestbook.md) for an example guestbook.
 
