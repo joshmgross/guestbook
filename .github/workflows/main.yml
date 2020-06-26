@@ -18,3 +18,13 @@ jobs:
         approvers: |
           joshmgross
     - run: cat README.md
+
+    - name: Update guestbook
+      run: |
+        if [[ `git status --porcelain` ]]; then
+          git config --local user.email "actions@github.com"
+          git config --local user.name "${{ github.actor }}"
+          git add README.md
+          git commit -m "✏ Update guestbook"
+          git push
+        fi
