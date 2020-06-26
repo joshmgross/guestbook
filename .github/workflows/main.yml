@@ -17,3 +17,4 @@ jobs:
         issue: 1
         approvers: |
           joshmgross
+    - run: cat README.md

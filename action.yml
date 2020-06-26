@@ -1,15 +1,22 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Guestboook'
+description: 'An Action 🎬 to create a Guestbook 📖✒ in your Repository 📚'
+author: 'joshmgross'
 inputs:
   issue:
     required: true
-    description: 'The issue number to retrieve guestbook entries'
-    default: 1
+    description: >
+      The issue number to retrieve guestbook entries
   token:
     description: >
-      Authorization token used to interact with the repository and update the Guestbook.
+      Authorization token used to interact with the repository and update the guestbook.
     default: ${{ github.token }}
+  approvers:
+    description: >
+      List of users allowed to approve comments for the guestbook.
+  guestbook-path:
+    description: >
+      File path of the guestbook.
+
 runs:
   using: 'node12'
   main: 'dist/index.js'

@@ -2905,23 +2905,26 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const github_1 = __webpack_require__(469);
+const book_1 = __webpack_require__(861);
 const utils = __importStar(__webpack_require__(163));
 const approveReaction = "+1";
+const defaultGuestbookPath = "README.md";
 async function run() {
     try {
         // Inputs and validation
         const token = core.getInput("token", { required: true });
         const octokit = github_1.getOctokit(token);
-        const approvers = core
-            .getInput("approvers", { required: true })
-            .split("\n")
-            .map(s => s.trim())
-            .filter(x => x !== "");
         const issue = Number(core.getInput("issue", { required: true }));
         if (isNaN(issue) || issue <= 0) {
             core.setFailed("❌ Invalid input: issue must be a valid number.");
             return;
         }
+        const approvers = core
+            .getInput("approvers", { required: true })
+            .split("\n")
+            .map(s => s.trim())
+            .filter(x => x !== "");
+        const guestbookPath = core.getInput("guestbook-path") || defaultGuestbookPath;
         utils.logInfo(`Retrieving issue commments from Issue #${issue}`);
         const issueRequestData = {
             // 🐫
@@ -2978,6 +2981,7 @@ async function run() {
         }
         utils.logInfo("✅ Approved comments 📝:");
         utils.logInfo(JSON.stringify(approvedComments));
+        book_1.generateGuestbook(guestbookPath, approvedComments);
         utils.logInfo("🎉🎈🎊 Action complete 🎉🎈🎊");
     }
     catch (error) {
@@ -9435,6 +9439,61 @@ restEndpointMethods.VERSION = VERSION;
 
 exports.restEndpointMethods = restEndpointMethods;
 //# sourceMappingURL=index.js.map
+
+
+/***/ }),
+
+/***/ 861:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.generateGuestbook = void 0;
+const fs = __importStar(__webpack_require__(747));
+const startComment = "<!--START:guestbook-->";
+const endComment = "<!--END:guestbook-->";
+const commentSectionRegex = new RegExp(`${startComment}[\\s\\S]+${endComment}`);
+function getReadme(path) {
+    return fs.readFileSync(path).toString();
+}
+function writeReadme(path, content) {
+    fs.writeFileSync(path, content);
+}
+function commentToMarkdown(comment) {
+    return `[@${comment.user}](https://github.com/${comment.user}) said:
+> ${comment.text}
+<sup>[src](${comment.url})</sup>`;
+}
+function createGuestbookList(comments) {
+    return comments.map(commentToMarkdown).join("\n\n---\n\n");
+}
+function generateGuestbook(path, comments) {
+    const guestbook = getReadme(path);
+    const guestbookList = createGuestbookList(comments);
+    const updatedGuestbook = guestbook.replace(commentSectionRegex, guestbookList);
+    writeReadme(path, updatedGuestbook);
+}
+exports.generateGuestbook = generateGuestbook;
 
 
 /***/ }),
