@@ -15,9 +15,8 @@ function writeReadme(path: string, content: string): void {
 }
 
 function commentToMarkdown(comment: Comment): string {
-    return `> ${comment.text}\n
-> -[@${comment.user}](https://github.com/${comment.user})
-<sup>[src](${comment.url})</sup>`;
+    return `> ${comment.text}
+> -[@${comment.user}](https://github.com/${comment.user})`;
 }
 
 function createGuestbookList(comments: Comment[]): string {

@@ -9480,9 +9480,8 @@ function writeReadme(path, content) {
     fs.writeFileSync(path, content);
 }
 function commentToMarkdown(comment) {
-    return `> ${comment.text}\n
-> -[@${comment.user}](https://github.com/${comment.user})
-<sup>[src](${comment.url})</sup>`;
+    return `> ${comment.text}
+> -[@${comment.user}](https://github.com/${comment.user})`;
 }
 function createGuestbookList(comments) {
     return comments.map(commentToMarkdown).join("\n\n");
