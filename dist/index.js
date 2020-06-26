@@ -2906,6 +2906,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const github_1 = __webpack_require__(469);
 const utils = __importStar(__webpack_require__(163));
+const approveReaction = "+1";
+const approvers = ["joshmgross"];
 async function run() {
     try {
         // Inputs and validation
@@ -2927,7 +2929,7 @@ async function run() {
         const issueComments = [];
         for await (const issueCommentResponse of octokit.paginate.iterator(octokit.issues.listComments, issueRequestData)) {
             if (issueCommentResponse.status < 200 || issueCommentResponse.status > 299) {
-                core.error(`❌ Received error response when retrieving guestbook issue: ${issueCommentResponse.status} - ${JSON.stringify(issueCommentResponse.data)}.`);
+                core.error(`❌ Received error response when retrieving guestbook issue comments: ${issueCommentResponse.status} - ${JSON.stringify(issueCommentResponse.data)}.`);
                 break;
             }
             issueComments.push(...issueCommentResponse.data.map(comment => {
@@ -2935,7 +2937,8 @@ async function run() {
                     id: comment.id,
                     text: comment.body,
                     user: comment.user.login,
-                    url: comment.html_url
+                    url: comment.html_url,
+                    apiUrl: comment.url
                 };
             }));
         }
@@ -2944,9 +2947,33 @@ async function run() {
             return;
         }
         utils.logInfo(`Retrieved ${issueComments.length} issue comments.`);
+        const approvedComments = [];
         for (const comment of issueComments) {
             console.log(`@${comment.user} said "${comment.text}"`);
+            // 🐫
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            const commentRequestData = { comment_id: comment.id, ...issueRequestData };
+            for await (const reactionsResponse of octokit.paginate.iterator(octokit.reactions.listForIssueComment, commentRequestData)) {
+                if (reactionsResponse.status < 200 || reactionsResponse.status > 299) {
+                    core.error(`❌ Received error response when retrieving comment reactions: ${reactionsResponse.status} - ${JSON.stringify(reactionsResponse.data)}.`);
+                    break;
+                }
+                let commentApproved = false;
+                for (const reaction of reactionsResponse.data) {
+                    if (reaction.content == approveReaction && approvers.includes(reaction.user.login)) {
+                        approvedComments.push(comment);
+                        utils.logInfo(`Comment approved by ${reaction.user.login}. ${comment.url}`);
+                        commentApproved = true;
+                        break;
+                    }
+                }
+                if (commentApproved) {
+                    break;
+                }
+            }
         }
+        utils.logInfo("✅ Approved comments 📝:");
+        utils.logInfo(JSON.stringify(approvedComments));
         utils.logInfo("🎉🎈🎊 Action complete 🎉🎈🎊");
     }
     catch (error) {
