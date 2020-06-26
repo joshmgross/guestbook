@@ -3,3 +3,6 @@ node_modules
 
 # eslint cache
 .eslintcache
+
+# tsc
+lib

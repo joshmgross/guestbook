@@ -15,13 +15,13 @@ function writeReadme(path: string, content: string): void {
 }
 
 function commentToMarkdown(comment: Comment): string {
-    return `[@${comment.user}](https://github.com/${comment.user}) said:
-> ${comment.text}
+    return `> ${comment.text}\n
+> -[@${comment.user}](https://github.com/${comment.user})
 <sup>[src](${comment.url})</sup>`;
 }
 
 function createGuestbookList(comments: Comment[]): string {
-    return comments.map(commentToMarkdown).join("\n\n---\n\n");
+    return comments.map(commentToMarkdown).join("\n\n");
 }
 
 export function generateGuestbook(path: string, comments: Comment[]): void {
