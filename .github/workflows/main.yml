@@ -15,3 +15,5 @@ jobs:
     - uses: ./
       with:
         issue: 1
+        approvers: |
+          joshmgross

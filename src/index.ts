@@ -12,13 +12,18 @@ interface Comment {
 }
 
 const approveReaction = "+1";
-const approvers = ["joshmgross"];
 
 async function run(): Promise<void> {
     try {
         // Inputs and validation
         const token = core.getInput("token", { required: true });
         const octokit = getOctokit(token);
+
+        const approvers = core
+            .getInput("approvers", { required: true })
+            .split("\n")
+            .map(s => s.trim())
+            .filter(x => x !== "");
 
         const issue = Number(core.getInput("issue", { required: true }));
         if (isNaN(issue) || issue <= 0) {

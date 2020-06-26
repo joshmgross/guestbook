@@ -2907,12 +2907,16 @@ const core = __importStar(__webpack_require__(470));
 const github_1 = __webpack_require__(469);
 const utils = __importStar(__webpack_require__(163));
 const approveReaction = "+1";
-const approvers = ["joshmgross"];
 async function run() {
     try {
         // Inputs and validation
         const token = core.getInput("token", { required: true });
         const octokit = github_1.getOctokit(token);
+        const approvers = core
+            .getInput("approvers", { required: true })
+            .split("\n")
+            .map(s => s.trim())
+            .filter(x => x !== "");
         const issue = Number(core.getInput("issue", { required: true }));
         if (isNaN(issue) || issue <= 0) {
             core.setFailed("❌ Invalid input: issue must be a valid number.");
