@@ -38,8 +38,6 @@ async function run(): Promise<void> {
         utils.logInfo(`Retrieving issue commments from Issue #${issue}`);
 
         const issueRequestData = {
-            // 🐫
-            // eslint-disable-next-line @typescript-eslint/camelcase
             issue_number: issue,
             owner: context.repo.owner,
             repo: context.repo.repo
@@ -47,7 +45,7 @@ async function run(): Promise<void> {
 
         const issueComments: Comment[] = [];
         for await (const issueCommentResponse of octokit.paginate.iterator(
-            octokit.issues.listComments,
+            octokit.rest.issues.listComments,
             issueRequestData
         )) {
             if (issueCommentResponse.status < 200 || issueCommentResponse.status > 299) {
@@ -64,7 +62,7 @@ async function run(): Promise<void> {
                     return {
                         id: comment.id,
                         text: comment.body,
-                        user: comment.user.login,
+                        user: comment.user?.login || "ghost",
                         url: comment.html_url,
                         apiUrl: comment.url
                     } as Comment;
@@ -83,11 +81,9 @@ async function run(): Promise<void> {
         for (const comment of issueComments) {
             console.log(`@${comment.user} said "${comment.text}"`);
 
-            // 🐫
-            // eslint-disable-next-line @typescript-eslint/camelcase
             const commentRequestData = { comment_id: comment.id, ...issueRequestData };
             for await (const reactionsResponse of octokit.paginate.iterator(
-                octokit.reactions.listForIssueComment,
+                octokit.rest.reactions.listForIssueComment,
                 commentRequestData
             )) {
                 if (reactionsResponse.status < 200 || reactionsResponse.status > 299) {
@@ -101,7 +97,11 @@ async function run(): Promise<void> {
 
                 let commentApproved = false;
                 for (const reaction of reactionsResponse.data) {
-                    if (reaction.content == approveReaction && approvers.includes(reaction.user.login)) {
+                    if (
+                        reaction.user &&
+                        reaction.content == approveReaction &&
+                        approvers.includes(reaction.user.login)
+                    ) {
                         approvedComments.push(comment);
                         utils.logInfo(`Comment approved by ${reaction.user.login}. ${comment.url}`);
                         commentApproved = true;

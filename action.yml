@@ -19,7 +19,7 @@ inputs:
       File path of the guestbook
 
 runs:
-  using: 'node12'
+  using: 'node20'
   main: 'dist/index.js'
 
 branding:

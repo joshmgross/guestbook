@@ -1,9 +1,12 @@
 {
   "name": "guestbook",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An Action 🎬 to create a Guestbook 📖✒ in your Repository 📚",
   "main": "dist/index.js",
   "private": true,
+  "engines": {
+    "node": ">=20.0.0 <21.0.0"
+  },
   "scripts": {
     "build": "tsc",
     "pack": "ncc build src/index.ts",
@@ -28,20 +31,20 @@
   },
   "homepage": "https://github.com/joshmgross/guestbook#readme",
   "dependencies": {
-    "@actions/core": "^1.9.1",
-    "@actions/github": "^3.0.0"
+    "@actions/core": "^1.10.1",
+    "@actions/github": "^6.0.0"
   },
   "devDependencies": {
-    "@types/node": "^12.12.47",
-    "@typescript-eslint/eslint-plugin": "^2.7.0",
-    "@typescript-eslint/parser": "^2.7.0",
-    "@zeit/ncc": "^0.22.3",
-    "eslint": "^6.6.0",
-    "eslint-config-prettier": "^6.5.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-prettier": "^3.1.1",
-    "eslint-plugin-simple-import-sort": "^5.0.2",
-    "prettier": "^2.0.4",
-    "typescript": "^3.7.5"
+    "@types/node": "^20.11.8",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "@vercel/ncc": "^0.38.1",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "prettier": "^3.2.4",
+    "typescript": "^5.3.3"
   }
 }
