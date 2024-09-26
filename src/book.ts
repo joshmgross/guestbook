@@ -22,7 +22,7 @@ function commentToMarkdown(comment: Comment): string {
 
     const handleLink = `[@${comment.user}](https://github.com/${comment.user})`;
 
-    return `${quotedComment}\n\n-${handleLink}`;
+    return `${quotedComment}\n-${handleLink}`;
 }
 
 function createGuestbookList(comments: Comment[]): string {

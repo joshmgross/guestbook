@@ -29170,7 +29170,7 @@ function commentToMarkdown(comment) {
         .map(line => `> ${line}`)
         .join("\n");
     const handleLink = `[@${comment.user}](https://github.com/${comment.user})`;
-    return `${quotedComment}\n\n-${handleLink}`;
+    return `${quotedComment}\n-${handleLink}`;
 }
 function createGuestbookList(comments) {
     return comments.map(commentToMarkdown).join("\n\n");
