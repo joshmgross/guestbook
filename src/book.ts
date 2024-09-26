@@ -15,8 +15,14 @@ function writeReadme(path: string, content: string): void {
 }
 
 function commentToMarkdown(comment: Comment): string {
-    return `> ${comment.text}
-> -[@${comment.user}](https://github.com/${comment.user})`;
+    const quotedComment = comment.text
+        .split("\n")
+        .map(line => `> ${line}`)
+        .join("\n");
+
+    const handleLink = `[@${comment.user}](https://github.com/${comment.user})`;
+
+    return `${quotedComment}\n\n-${handleLink}`;
 }
 
 function createGuestbookList(comments: Comment[]): string {
